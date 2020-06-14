@@ -112,6 +112,24 @@ fileread(struct file *f, char *addr, int n)
   panic("fileread");
 }
 
+uint
+filelseek(struct file *f, uint offset)
+{
+  int r;
+
+  if(f->readable == 0 && f->writeable == 0)
+    return -1;
+  if(f->type == FD_PIPE)
+    return -1;
+  if(f->type == FD_INODE){
+    ilock(f->ip);
+    f->off += offset;
+    iunlock(f->ip);
+    return offset;
+  }
+  panic("filelseek");
+}
+
 //PAGEBREAK!
 // Write to file f.
 int
