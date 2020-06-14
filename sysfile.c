@@ -79,6 +79,18 @@ sys_read(void)
 }
 
 int
+sys_lseek(void)
+{
+  struct file *f;
+  uint offset;
+  int whence;
+
+  if(argfd(0, 0, &f) < 0)
+    return -1;
+  return filelseek(f, offset, whence);
+}
+
+int
 sys_write(void)
 {
   struct file *f;
