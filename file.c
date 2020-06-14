@@ -113,19 +113,22 @@ fileread(struct file *f, char *addr, int n)
 }
 
 uint
-filelseek(struct file *f, uint offset)
+filelseek(struct file *f, uint offset, int whence)
 {
-  int r;
-
   if(f->readable == 0 && f->writeable == 0)
     return -1;
   if(f->type == FD_PIPE)
     return -1;
   if(f->type == FD_INODE){
     ilock(f->ip);
-    f->off += offset;
+    if(whence == SEEK_SET)
+      f->off = offset;
+    if else(whence == SEEK_CUR)
+      f->off += offset;
+    else
+      return -1;
     iunlock(f->ip);
-    return offset;
+    return f->off;
   }
   panic("filelseek");
 }
